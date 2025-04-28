@@ -2,8 +2,11 @@ package com.service.school_service.service;
 
 import com.service.school_service.client.StudentClient;
 import com.service.school_service.client.TeacherClient;
+import com.service.school_service.dto.CreateSchoolClassDto;
+import com.service.school_service.dto.SchoolClassDto;
 import com.service.school_service.dto.StudentDto;
 import com.service.school_service.dto.TeacherDto;
+import com.service.school_service.mapper.SchoolClassMapper;
 import com.service.school_service.model.SchoolClass;
 import com.service.school_service.repository.SchoolClassRepository;
 import org.springframework.stereotype.Service;
@@ -22,15 +25,22 @@ public class SchoolClassServiceImpl implements SchoolClassService {
     private final TeacherClient teacherClient;
     private final StudentClient studentClient;
 
-    public SchoolClassServiceImpl(SchoolClassRepository schoolClassRepository, TeacherClient teacherClient, StudentClient studentClient) {
+    private final SchoolClassMapper schoolClassMapper;
+
+    public SchoolClassServiceImpl(SchoolClassRepository schoolClassRepository, TeacherClient teacherClient, StudentClient studentClient, SchoolClassMapper schoolClassMapper) {
         this.schoolClassRepository = schoolClassRepository;
         this.teacherClient = teacherClient;
         this.studentClient = studentClient;
+        this.schoolClassMapper = schoolClassMapper;
     }
 
     @Override
-    public Mono<SchoolClass> createSchoolClass(SchoolClass schoolClass) {
-        return Mono.fromCallable(() -> schoolClassRepository.save(schoolClass))
+    public Mono<SchoolClassDto> createSchoolClass(CreateSchoolClassDto schoolClassDto) {
+        return Mono.fromCallable(() -> {
+                SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
+                SchoolClass schoolClassSaved = schoolClassRepository.save(schoolClass);
+                return schoolClassMapper.toDto(schoolClassSaved);
+                })
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -49,7 +59,7 @@ public class SchoolClassServiceImpl implements SchoolClassService {
      * @return a {@link Mono} emitting the fully populated {@link SchoolClass}
      */
     @Override
-    public Mono<SchoolClass> getSchoolClass(Long classId) {
+    public Mono<SchoolClassDto> getSchoolClass(Long classId) {
         return Mono.fromCallable(() -> schoolClassRepository.findById(classId).orElseThrow())
                 .subscribeOn(Schedulers.boundedElastic())
                 // .flatMap - chain an asynchronous operation that returns another Mono.
@@ -63,7 +73,8 @@ public class SchoolClassServiceImpl implements SchoolClassService {
                             schoolClass.setStudents(tuple.getT2());
                             return schoolClass;
                         })
-                );
+                )
+                .map(schoolClassMapper::toDto);
     }
 
 
@@ -81,10 +92,10 @@ public class SchoolClassServiceImpl implements SchoolClassService {
      * @return a {@link Flux} emitting all {@link SchoolClass} entities stored in the database
      */
     @Override
-    public Flux<SchoolClass> getAllSchoolClasses() {
+    public Flux<SchoolClassDto> getAllSchoolClasses() {
         return Mono.fromCallable(() -> schoolClassRepository.findAll())
                 .subscribeOn(Schedulers.boundedElastic())
-                .flatMapMany(Flux::fromIterable);
+                .flatMapMany(Flux::fromIterable).map(schoolClassMapper::toDto);
     }
 
     @Override
@@ -99,23 +110,24 @@ public class SchoolClassServiceImpl implements SchoolClassService {
      *
      * <p>This method performs the following operations:</p>
      * <ul>
-     *   <li>Loads the existing class from the database (blocking, wrapped in a reactive Mono).</li>
-     *   <li>Checks if the teacher has changed and fetches the new teacher data if needed.</li>
+     *   <li>Loads the existing class from the database (blocking, wrapped in a reactive {@link Mono}).</li>
+     *   <li>Checks if the teacher has changed and fetches the updated teacher data if needed.</li>
      *   <li>Determines changes in the student list, removes old class references from removed students,
-     *       assigns the class ID to newly added students, and fetches updated student data.</li>
-     *   <li>Combines the updated teacher and student information into the existing class object.</li>
+     *       assigns the class ID to newly added students, and fetches the updated list of students.</li>
+     *   <li>Updates the entity fields (name, gradeLevel, teacherId, students).</li>
      *   <li>Saves the updated class back to the database.</li>
      * </ul>
      *
      * @param id the ID of the school class to update
-     * @param updatedClass the new data to update the school class with
-     * @return a {@link Mono} emitting the updated and saved {@link SchoolClass} object
+     * @param updatedClassDto the new data to update the school class with
+     * @return a {@link Mono} emitting the updated {@link SchoolClassDto}
      */
     @Override
-    public Mono<SchoolClass> updateSchoolClass(Long id, SchoolClass updatedClass) {
+    public Mono<SchoolClassDto> updateSchoolClass(Long id, SchoolClassDto updatedClassDto) {
         return Mono.fromCallable(() -> schoolClassRepository.findById(id).orElseThrow(() -> new RuntimeException("School class not found with id: " + id)))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(existingClass -> {
+                    SchoolClass updatedClass = schoolClassMapper.toEntity(updatedClassDto);
                     existingClass.setName(updatedClass.getName());
                     existingClass.setGradeLevel(updatedClass.getGradeLevel());
 
@@ -168,7 +180,6 @@ public class SchoolClassServiceImpl implements SchoolClassService {
                             });
                 })
                 .flatMap(updated -> Mono.fromCallable(() -> schoolClassRepository.save(updated))
-                        .subscribeOn(Schedulers.boundedElastic()));
+                        .subscribeOn(Schedulers.boundedElastic())).map(schoolClassMapper::toDto);
                 }
-
 }

@@ -1,15 +1,14 @@
 package com.service.school_service.service;
 
-import com.service.school_service.model.SchoolClass;
-import org.springframework.stereotype.Service;
+import com.service.school_service.dto.CreateSchoolClassDto;
+import com.service.school_service.dto.SchoolClassDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface SchoolClassService {
-    Mono<SchoolClass> getSchoolClass(Long classId);
-    Flux<SchoolClass> getAllSchoolClasses();
+    Mono<SchoolClassDto> createSchoolClass(CreateSchoolClassDto schoolClass);
+    Mono<SchoolClassDto> getSchoolClass(Long classId);
+    Flux<SchoolClassDto> getAllSchoolClasses();
     Mono<Void> deleteSchoolClass(Long id);
-    Mono<SchoolClass> updateSchoolClass(Long id, SchoolClass updatedClass);
-    Mono<SchoolClass> createSchoolClass(SchoolClass schoolClass);
-
+    Mono<SchoolClassDto> updateSchoolClass(Long id, SchoolClassDto updatedClass);
 }

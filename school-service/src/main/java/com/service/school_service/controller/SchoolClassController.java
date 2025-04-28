@@ -1,6 +1,7 @@
 package com.service.school_service.controller;
 
-import com.service.school_service.model.SchoolClass;
+import com.service.school_service.dto.CreateSchoolClassDto;
+import com.service.school_service.dto.SchoolClassDto;
 import com.service.school_service.service.SchoolClassService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +19,14 @@ public class SchoolClassController {
     }
 
     @GetMapping("/{classId}")
-    public Mono<ResponseEntity<SchoolClass>> getSchoolClassWithDetails(@PathVariable Long classId) {
+    public Mono<ResponseEntity<SchoolClassDto>> getSchoolClassWithDetails(@PathVariable Long classId) {
         return schoolClassService.getSchoolClass(classId)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Mono<ResponseEntity<SchoolClass>> createSchoolClass(@RequestBody SchoolClass schoolClass) {
+    public Mono<ResponseEntity<SchoolClassDto>> createSchoolClass(@RequestBody CreateSchoolClassDto schoolClass) {
         return schoolClassService.createSchoolClass(schoolClass)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
@@ -38,7 +39,7 @@ public class SchoolClassController {
     }
 
     @PutMapping("/{classId}")
-    public Mono<ResponseEntity<SchoolClass>> updateSchoolClass(@PathVariable Long classId, @RequestBody SchoolClass schoolClass) {
+    public Mono<ResponseEntity<SchoolClassDto>> updateSchoolClass(@PathVariable Long classId, @RequestBody SchoolClassDto schoolClass) {
         return schoolClassService.updateSchoolClass(classId, schoolClass)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
@@ -46,7 +47,7 @@ public class SchoolClassController {
     }
 
     @GetMapping("/all")
-    public Flux<SchoolClass> getAllSchoolClasses() {
+    public Flux<SchoolClassDto> getAllSchoolClasses() {
         return schoolClassService.getAllSchoolClasses();
     }
 }
