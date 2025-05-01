@@ -8,7 +8,6 @@ import java.util.Optional;
 
 public interface SchoolService {
     SchoolDto createSchool(CreateSchoolDto school);
-
     SchoolDto updateSchool(Long id, SchoolDto updatedSchool);
     List<SchoolDto> getAllSchools();
     Optional<SchoolDto> getSchoolById(Long id); // Optional is meant for a single value that might be absent.

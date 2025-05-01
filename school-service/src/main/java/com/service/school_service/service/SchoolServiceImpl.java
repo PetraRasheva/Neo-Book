@@ -8,6 +8,7 @@ import com.service.school_service.mapper.SchoolMapper;
 import com.service.school_service.model.School;
 import com.service.school_service.model.SchoolClass;
 import com.service.school_service.repository.SchoolRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,12 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SchoolServiceImplementation implements SchoolService {
+@Service
+public class SchoolServiceImpl implements SchoolService {
     private final SchoolRepository schoolRepository;
     private final SchoolMapper schoolMapper;
     private final SchoolClassMapper schoolClassMapper;
-    public SchoolServiceImplementation(SchoolRepository schoolRepository, SchoolMapper schoolMapper, SchoolClassMapper schoolClassMapper) {
+    public SchoolServiceImpl(SchoolRepository schoolRepository, SchoolMapper schoolMapper, SchoolClassMapper schoolClassMapper) {
         this.schoolRepository = schoolRepository;
         this.schoolMapper = schoolMapper;
         this.schoolClassMapper = schoolClassMapper;
@@ -54,8 +56,11 @@ public class SchoolServiceImplementation implements SchoolService {
      */
     @Override
     public SchoolDto updateSchool(Long id, SchoolDto updatedSchool) {
+
         School school = schoolRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("School not found"));
+
+        // You don’t map the DTO to an entity upfront because you’re updating an existing entity (already managed by JPA)
 
         school.setName(updatedSchool.name());
         school.setAddress(updatedSchool.address());

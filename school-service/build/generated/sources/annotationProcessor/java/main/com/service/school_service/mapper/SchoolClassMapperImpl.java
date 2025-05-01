@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-28T18:41:29+0300",
+    date = "2025-05-01T10:45:11+0300",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.13.jar, environment: Java 17.0.14 (Amazon.com Inc.)"
 )
 @Component
@@ -45,6 +45,8 @@ public class SchoolClassMapperImpl implements SchoolClassMapper {
 
         SchoolClass schoolClass = new SchoolClass();
 
+        schoolClass.setSchool( idToSchool( createSchoolClassDto.schoolId() ) );
+        schoolClass.setSpeciality( idToSpeciality( createSchoolClassDto.specialityId() ) );
         schoolClass.setName( createSchoolClassDto.name() );
         schoolClass.setGradeLevel( createSchoolClassDto.gradeLevel() );
         schoolClass.setTeacherId( createSchoolClassDto.teacherId() );

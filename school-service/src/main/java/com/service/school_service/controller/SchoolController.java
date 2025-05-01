@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@RestController
+@RequestMapping("/schools")
 public class SchoolController {
     
     private final SchoolService schoolService;
@@ -29,6 +31,7 @@ public class SchoolController {
 
     }
 
+    // TODO: How we want to update the classes inside ? Currently we pass a new List<SchoolClass>
     @PutMapping("/{classId}")
     public ResponseEntity<SchoolDto> updateSchool(@PathVariable Long classId, @RequestBody SchoolDto school) {
         try {

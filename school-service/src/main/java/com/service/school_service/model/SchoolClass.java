@@ -2,6 +2,7 @@ package com.service.school_service.model;
 
 import com.service.school_service.dto.StudentDto;
 import com.service.school_service.dto.TeacherDto;
+import com.service.school_service.enums.GradeLetter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,10 @@ public class SchoolClass {
 
     private String name;
     private int gradeLevel;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private GradeLetter letter;
 
     @ManyToOne
     @JoinColumn(name = "school_id", nullable = false)

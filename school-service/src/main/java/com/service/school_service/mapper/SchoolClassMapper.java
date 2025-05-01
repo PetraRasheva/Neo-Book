@@ -19,6 +19,8 @@ public interface SchoolClassMapper {
 
     @Mapping(target = "id", ignore = true) // because it's auto-generated
     @Mapping(target = "students", ignore = true) // we create school empty first
+    @Mapping(target = "school", source = "schoolId", qualifiedByName = "idToSchool")
+    @Mapping(target = "speciality", source = "specialityId", qualifiedByName = "idToSpeciality")
     SchoolClass toEntity(CreateSchoolClassDto createSchoolClassDto);
 
     @Mapping(target = "schoolId", source = "school.id")
@@ -42,5 +44,4 @@ public interface SchoolClassMapper {
         speciality.setId(id);
         return speciality;
     }
-
 }

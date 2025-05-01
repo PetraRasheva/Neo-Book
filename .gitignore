@@ -1,0 +1,17 @@
+# macOS system files
+.DS_Store
+
+# Gradle build output
+/build
+.gradle
+
+# IntelliJ IDEA settings
+*.iml
+.idea/
+out/
+
+# Spring Boot specific
+application.properties
+application.yml
+application-*.yml
+

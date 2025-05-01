@@ -24,7 +24,7 @@ public class SubjectAssignment {
     @Transient
     private TeacherDto teacher; // Fetched via WebClient
 
-    @OneToOne
+    @OneToOne // do I need this ?
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
 
