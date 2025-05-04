@@ -60,8 +60,7 @@ public class SchoolServiceImpl implements SchoolService {
         School school = schoolRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("School not found"));
 
-        // You don’t map the DTO to an entity upfront because you’re updating an existing entity (already managed by JPA)
-
+        // We don’t map the DTO to an entity upfront because you’re updating an existing entity (already managed by JPA)
         school.setName(updatedSchool.name());
         school.setAddress(updatedSchool.address());
 

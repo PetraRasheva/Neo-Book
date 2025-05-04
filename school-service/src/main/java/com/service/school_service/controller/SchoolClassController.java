@@ -3,10 +3,11 @@ package com.service.school_service.controller;
 import com.service.school_service.dto.CreateSchoolClassDto;
 import com.service.school_service.dto.SchoolClassDto;
 import com.service.school_service.service.SchoolClassService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/school-classes")
@@ -19,35 +20,35 @@ public class SchoolClassController {
     }
 
     @GetMapping("/{classId}")
-    public Mono<ResponseEntity<SchoolClassDto>> getSchoolClassWithDetails(@PathVariable Long classId) {
-        return schoolClassService.getSchoolClass(classId)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public ResponseEntity<SchoolClassDto> getSchoolClassWithDetails(@PathVariable Long classId) {
+        SchoolClassDto schoolClassDto = schoolClassService.getSchoolClass(classId);
+        return new ResponseEntity<>(schoolClassDto, HttpStatus.OK);
+
     }
 
     @PostMapping
-    public Mono<ResponseEntity<SchoolClassDto>> createSchoolClass(@RequestBody CreateSchoolClassDto schoolClass) {
-        return schoolClassService.createSchoolClass(schoolClass)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public ResponseEntity<SchoolClassDto> createSchoolClass(@RequestBody CreateSchoolClassDto schoolClass) {
+        SchoolClassDto schoolClassDto = schoolClassService.createSchoolClass(schoolClass);
+        return new ResponseEntity<>(schoolClassDto, HttpStatus.CREATED);
+
     }
 
     @DeleteMapping("/{classId}")
-    public Mono<ResponseEntity<Void>> deleteSchoolClassById(@PathVariable Long classId) {
-        return schoolClassService.deleteSchoolClass(classId)
-                .thenReturn(ResponseEntity.noContent().build());
+    public ResponseEntity<Void> deleteSchoolClassById(@PathVariable Long classId) {
+        this.schoolClassService.deleteSchoolClass(classId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 
     @PutMapping("/{classId}")
-    public Mono<ResponseEntity<SchoolClassDto>> updateSchoolClass(@PathVariable Long classId, @RequestBody SchoolClassDto schoolClass) {
-        return schoolClassService.updateSchoolClass(classId, schoolClass)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
-
+    public ResponseEntity<SchoolClassDto> updateSchoolClass(@PathVariable Long classId, @RequestBody SchoolClassDto schoolClass) {
+        SchoolClassDto schoolClassDto = schoolClassService.updateSchoolClass(classId, schoolClass);
+        return new ResponseEntity<>(schoolClassDto, HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public Flux<SchoolClassDto> getAllSchoolClasses() {
-        return schoolClassService.getAllSchoolClasses();
+    public ResponseEntity<List<SchoolClassDto>> getAllSchoolClasses() {
+        List<SchoolClassDto> schoolClassDtos = schoolClassService.getAllSchoolClasses();
+        return new ResponseEntity<>(schoolClassDtos, HttpStatus.OK);
     }
 }

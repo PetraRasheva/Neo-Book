@@ -4,7 +4,6 @@ import java.util.List;
 
 public record ProgramDto(
         Long id,
-        String name,
         Long schoolClassId,
         List<SubjectAssignmentDto> subjectAssignments
 ) {

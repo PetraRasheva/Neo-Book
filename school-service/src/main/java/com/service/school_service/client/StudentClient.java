@@ -3,9 +3,10 @@ package com.service.school_service.client;
 import com.service.school_service.dto.StudentDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,7 +18,10 @@ public class StudentClient {
         this.webClient = webClientBuilder.baseUrl("http://api-gateway:8080").build();
     }
 
-    public Mono<HashSet<StudentDto>> getStudentsByClassId(Long classId) {
+    public Set<StudentDto> getStudentsByClassId(Long classId) {
+        if (classId == null)
+            throw new IllegalArgumentException("classId must not be null");
+
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/users/students/")
@@ -25,42 +29,62 @@ public class StudentClient {
                         .build())
                 .retrieve()
                 .bodyToFlux(StudentDto.class)
-                .collect(Collectors.toCollection(HashSet::new));
+                .collect(Collectors.toCollection(HashSet::new))
+                .block();
     }
 
-    public Mono<Void> removeSchoolClassReference(Long schoolClassId) {
-        return webClient.put()
+    public void removeSchoolClassReference(Long schoolClassId) {
+        if (schoolClassId == null)
+            throw new IllegalArgumentException("schoolClassId must not be null");
+
+        webClient.put()
                 .uri("students/clear-class/{classId}", schoolClassId)
                 .retrieve()
-                .bodyToMono(Void.class);
+                .bodyToMono(Void.class)
+                .block();
     }
 
-    public Mono<Void> removeClassIdFromStudents(HashSet<Long> studentIds) {
-        return webClient.put()
+    public void removeClassIdFromStudents(Set<Long> studentIds) {
+        if (studentIds == null || studentIds.isEmpty())
+            throw new IllegalArgumentException("studentIds must not be null or empty");
+
+        webClient.put()
                 .uri("students/clear-class")
                 .bodyValue(studentIds)
                 .retrieve()
-                .bodyToMono(Void.class);
+                .bodyToMono(Void.class)
+                .block();
     }
 
-    public Mono<Void> assignClassIdToStudents(HashSet<Long> studentIds, Long schoolClassId) {
-        return webClient.put()
+    public void assignClassIdToStudents(Set<Long> studentIds, Long schoolClassId) {
+        if (studentIds == null || studentIds.isEmpty())
+            throw new IllegalArgumentException("studentIds must not be null or empty");
+        if (schoolClassId == null)
+            throw new IllegalArgumentException("schoolClassId must not be null");
+
+        webClient.put()
                 .uri("students/add-class/{id}" , schoolClassId)
                 .bodyValue(studentIds)
                 .retrieve()
-                .bodyToMono(Void.class);
+                .bodyToMono(Void.class)
+                .block();
     }
 
-    public Mono<HashSet<StudentDto>> getStudentsByIds(HashSet<Long> studentIds) {
-        // Build query params like ?ids=1&ids=2&ids=3
-        return webClient.get()
+    public Set<StudentDto> getStudentsByIds(Set<Long> studentIds) {
+        if (studentIds == null || studentIds.isEmpty())
+            throw new IllegalArgumentException("studentIds must not be null or empty");
+
+        List<StudentDto> students = webClient.get()
                 .uri(uriBuilder ->
                         uriBuilder.path("students")
                                 .queryParam("ids", studentIds.toArray())
                                 .build()
                 )
                 .retrieve()
-                .bodyToFlux(StudentDto.class) // Assuming the response is a JSON array of students
-                .collect(Collectors.toCollection(HashSet::new));
+                .bodyToFlux(StudentDto.class)
+                .collectList()
+                .block(); // blocking
+
+        return new HashSet<>(students);
     }
 }

@@ -14,8 +14,6 @@ public class Program {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
     @OneToOne
     @JoinColumn(name = "school_class_id", nullable = false)
     private SchoolClass schoolClass;

@@ -6,7 +6,7 @@ import com.service.school_service.enums.GradeLetter;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -36,5 +36,5 @@ public class SchoolClass {
     private TeacherDto teacherDto;
 
     @Transient
-    private HashSet<StudentDto> students;
+    private Set<StudentDto> students;
 }

@@ -3,7 +3,6 @@ package com.service.school_service.client;
 import com.service.school_service.dto.TeacherDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Service
 public class TeacherClient {
@@ -14,10 +13,13 @@ public class TeacherClient {
         this.webClient = webClientBuilder.baseUrl("http://api-gateway:8080").build(); // URL на user-service
     }
 
-    public Mono<TeacherDto> getTeacherById(Long teacherId) {
+    public TeacherDto getTeacherById(Long teacherId) {
+        if ( teacherId == null )
+            throw new IllegalArgumentException("teacherId must not be null");
         return webClient.get()
                 .uri("/users/teachers/{id}", teacherId)
                 .retrieve()
-                .bodyToMono(TeacherDto.class);
+                .bodyToMono(TeacherDto.class)
+                .block(); // This makes it synchronous
     }
 }

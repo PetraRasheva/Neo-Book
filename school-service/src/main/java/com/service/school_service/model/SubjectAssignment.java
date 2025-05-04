@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -16,8 +16,8 @@ public class SubjectAssignment {
 
     private DayOfWeek dayOfWeek; // Enum: MONDAY, TUESDAY, etc.
 
-    private LocalTime startTime; // e.g., 08:30
-    private LocalTime endTime;   // e.g., 09:15
+    private LocalDateTime startTime; // e.g., 08:30
+    private LocalDateTime endTime;   // e.g., 09:15
 
     private Long teacherId; // From user-service
 
