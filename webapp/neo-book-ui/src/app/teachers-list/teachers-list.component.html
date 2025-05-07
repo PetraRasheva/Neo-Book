@@ -1,0 +1,14 @@
+<mat-accordion>
+  @for (subject of subjects(); track subject) {
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title> {{ subject }} </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-list role="list">
+      @for (teacher of teacherSubjectsMap()[subject]; track teacher) {
+      <mat-list-item role="listitem"> {{ teacher.name }} </mat-list-item>
+      }
+    </mat-list>
+  </mat-expansion-panel>
+  }
+</mat-accordion>
