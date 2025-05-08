@@ -2,12 +2,15 @@ package com.service.school_service.service;
 
 import com.service.school_service.dto.CreateSubjectDto;
 import com.service.school_service.dto.SubjectDto;
+import com.service.school_service.exception.SubjectNotFoundException;
 import com.service.school_service.mapper.SubjectMapper;
 import com.service.school_service.model.Subject;
 import com.service.school_service.repository.SubjectRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,29 +22,36 @@ public class SubjectServiceImpl implements SubjectService {
     private final SubjectMapper subjectMapper;
 
     @Override
+    @Transactional
     public SubjectDto createSubject(CreateSubjectDto subjectDto) {
         Subject subject = subjectMapper.toEntity(subjectDto);
+        subject.setTeacherIds(new HashSet<>(subjectDto.teacherIds()));
         return subjectMapper.toDto(subjectRepository.save(subject));
     }
 
     @Override
     public SubjectDto updateSubject(Long id, SubjectDto subjectDto) {
         Subject subject = subjectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subject not found"));
+                .orElseThrow(() -> new SubjectNotFoundException(id));
 
         subject.setName(subjectDto.name());
+        subject.setTeacherIds(new HashSet<>(subjectDto.teacherIds()));
         return subjectMapper.toDto(subjectRepository.save(subject));
     }
 
     @Override
     public void deleteSubject(Long id) {
+        if (!subjectRepository.existsById(id)) {
+            throw new SubjectNotFoundException(id);
+        }
         subjectRepository.deleteById(id);
     }
 
     @Override
     public SubjectDto getSubjectById(Long id) {
-        return subjectMapper.toDto(subjectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subject not found")));
+        Subject subject = subjectRepository.findById(id)
+                .orElseThrow(() -> new SubjectNotFoundException(id));
+        return subjectMapper.toDto(subject);
     }
 
     @Override

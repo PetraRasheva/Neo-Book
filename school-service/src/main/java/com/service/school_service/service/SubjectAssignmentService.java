@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface SubjectAssignmentService {
     SubjectAssignmentDto createSubjectAssignment(CreateSubjectAssignmentDto subjectAssignmentDto);
     SubjectAssignmentDto updateSubjectAssignment(Long id, SubjectAssignmentDto subjectAssignmentDto);
-    Optional<List<SubjectAssignmentDto>> getAllSubjectAssignmentsByProgramId(Long programId);
+    List<SubjectAssignmentDto> getAllSubjectAssignmentsByScheduleId(Long id);
     SubjectAssignmentDto getSubjectAssignmentById(Long id);
     void deleteSubjectAssignment(Long id);
 }

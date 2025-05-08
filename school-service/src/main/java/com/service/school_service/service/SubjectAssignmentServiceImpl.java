@@ -1,52 +1,104 @@
 package com.service.school_service.service;
 
-import com.service.school_service.dto.CreateSubjectAssignmentDto;
-import com.service.school_service.dto.SubjectAssignmentDto;
+import com.service.school_service.client.TeacherClient;
+import com.service.school_service.dto.*;
+import com.service.school_service.exception.SubjectAssignmentNotFoundException;
+import com.service.school_service.mapper.ScheduleMapper;
 import com.service.school_service.mapper.SubjectAssignmentMapper;
+import com.service.school_service.mapper.SubjectMapper;
+import com.service.school_service.model.Subject;
 import com.service.school_service.model.SubjectAssignment;
 import com.service.school_service.repository.SubjectAssignmentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SubjectAssignmentServiceImpl implements SubjectAssignmentService {
 
     private final SubjectAssignmentRepository subjectAssignmentRepository;
     private final SubjectAssignmentMapper subjectAssignmentMapper;
+    private final TeacherClient teacherClient;
+    private final SubjectService subjectService;
+    private final SubjectMapper subjectMapper;
+    private final ScheduleMapper scheduleMapper;
+    private final ScheduleService scheduleService;
 
-    public SubjectAssignmentServiceImpl(SubjectAssignmentRepository subjectAssignmentRepository, SubjectAssignmentMapper subjectAssignmentMapper) {
+    public SubjectAssignmentServiceImpl(SubjectAssignmentRepository subjectAssignmentRepository, SubjectAssignmentMapper subjectAssignmentMapper, TeacherClient teacherClient, SubjectService subjectService, SubjectMapper subjectMapper, ScheduleMapper scheduleMapper, ScheduleService scheduleService) {
         this.subjectAssignmentRepository = subjectAssignmentRepository;
         this.subjectAssignmentMapper = subjectAssignmentMapper;
+        this.teacherClient = teacherClient;
+        this.subjectService = subjectService;
+        this.subjectMapper = subjectMapper;
+        this.scheduleMapper = scheduleMapper;
+        this.scheduleService = scheduleService;
     }
 
     @Override
-    public SubjectAssignmentDto createSubjectAssignment(CreateSubjectAssignmentDto subjectAssignmentDto) {
-        SubjectAssignment subjectAssignment = subjectAssignmentMapper.toEntity(subjectAssignmentDto);
-        return this.subjectAssignmentMapper.toDto(subjectAssignmentRepository.save(subjectAssignment));
+    public SubjectAssignmentDto createSubjectAssignment(CreateSubjectAssignmentDto dto) {
+        TeacherDto teacher = teacherClient.getTeacherById(dto.teacherId());
+
+        SubjectDto subject = subjectService.getSubjectById(dto.subjectId());
+
+        ScheduleDto schedule = scheduleService.getScheduleById(dto.scheduleId());
+
+        SubjectAssignment assignment = new SubjectAssignment();
+        assignment.setDayOfWeek(dto.dayOfWeek());
+        assignment.setTimeSlot(dto.timeSlot());
+        assignment.setTeacherId(dto.teacherId());
+        assignment.setTeacher(teacher); // @Transient
+        assignment.setSubject(this.subjectMapper.toEntity(subject));
+        assignment.setSchedule(this.scheduleMapper.toEntity(schedule));
+
+        SubjectAssignment saved = subjectAssignmentRepository.save(assignment);
+        return subjectAssignmentMapper.toDto(saved);
     }
 
     @Override
-    public SubjectAssignmentDto updateSubjectAssignment(Long id, SubjectAssignmentDto subjectAssignmentDto) {
-        SubjectAssignment currentSubjectAssignment = this.subjectAssignmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Subject Assignment Not Found"));
+    public SubjectAssignmentDto updateSubjectAssignment(Long id, SubjectAssignmentDto dto) {
+        SubjectAssignment assignment = subjectAssignmentRepository.findById(id)
+                .orElseThrow(() -> new SubjectAssignmentNotFoundException(id));
 
-        // TODO: Program service Subject Service
-        return null;
+        TeacherDto teacher = teacherClient.getTeacherById(dto.teacherId());
+
+        SubjectDto subjectDto = subjectService.getSubjectById(dto.subjectId());
+
+        assignment.setDayOfWeek(dto.dayOfWeek());
+        assignment.setTimeSlot(dto.timeSlot());
+        assignment.setTeacherId(dto.teacherId());
+        assignment.setTeacher(teacher); // @Transient
+
+        Subject subject = new Subject();
+        subject.setId(subjectDto.id());
+        assignment.setSubject(subject);
+
+        SubjectAssignment updated = subjectAssignmentRepository.save(assignment);
+        return subjectAssignmentMapper.toDto(updated);
     }
 
     @Override
-    public Optional<List<SubjectAssignmentDto>> getAllSubjectAssignmentsByProgramId(Long programId) {
-        return Optional.empty();
+    public List<SubjectAssignmentDto> getAllSubjectAssignmentsByScheduleId(Long scheduleId) {
+        List<SubjectAssignment> assignments = subjectAssignmentRepository.findByScheduleId(scheduleId);
+        if (assignments.isEmpty()) {
+            throw new SubjectAssignmentNotFoundException(scheduleId);
+        }
+        return assignments.stream()
+                .map(subjectAssignmentMapper::toDto)
+                .toList();
     }
 
     @Override
     public SubjectAssignmentDto getSubjectAssignmentById(Long id) {
-        return null;
+        SubjectAssignment assignment = subjectAssignmentRepository.findById(id)
+                .orElseThrow(() -> new SubjectAssignmentNotFoundException(id));
+        return subjectAssignmentMapper.toDto(assignment);
     }
 
     @Override
     public void deleteSubjectAssignment(Long id) {
-
+        if (!subjectAssignmentRepository.existsById(id)) {
+            throw new SubjectAssignmentNotFoundException(id);
+        }
+        subjectAssignmentRepository.deleteById(id);
     }
 }

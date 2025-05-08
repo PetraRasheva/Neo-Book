@@ -1,59 +1,62 @@
 package com.service.school_service.controller;
 
-import com.service.school_service.dto.CreateSchoolDto;
-import com.service.school_service.dto.SchoolDto;
+import com.service.school_service.dto.*;
 import com.service.school_service.service.SchoolService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/schools")
+@RequestMapping("/api/schools")
+@RequiredArgsConstructor
 public class SchoolController {
     
     private final SchoolService schoolService;
-    public SchoolController(SchoolService schoolService) {
-        this.schoolService = schoolService;
-    }
 
     @PostMapping
-    public ResponseEntity<SchoolDto> createSchool(@RequestBody CreateSchoolDto school) {
-       SchoolDto schoolDto =  schoolService.createSchool(school);
-       return ResponseEntity.ok(schoolDto);
+    public ResponseEntity<SchoolDto> createSchool(@RequestBody CreateSchoolDto schoolDto) {
+        SchoolDto createdSchool = schoolService.createSchool(schoolDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdSchool);
     }
 
-    @GetMapping("/{classId}")
-    public ResponseEntity<SchoolDto> getSchoolWithDetails(@PathVariable Long classId) {
-        Optional<SchoolDto> schoolDtoOpt = schoolService.getSchoolById(classId);
-        return schoolDtoOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-
+    @GetMapping("/{schoolId}")
+    public ResponseEntity<SchoolDto> getSchoolById(@PathVariable Long schoolId) {
+        SchoolDto school = schoolService.getSchoolById(schoolId);
+        return ResponseEntity.status(HttpStatus.OK).body(school);
     }
 
-    // TODO: How we want to update the classes inside ? Currently we pass a new List<SchoolClass>
-    @PutMapping("/{classId}")
-    public ResponseEntity<SchoolDto> updateSchool(@PathVariable Long classId, @RequestBody SchoolDto school) {
-        try {
-            SchoolDto updatedSchool = schoolService.updateSchool(classId, school);
-            return ResponseEntity.ok(updatedSchool);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/{schoolId}")
+    public ResponseEntity<SchoolDto> updateSchool(@PathVariable Long schoolId, @RequestBody UpdateSchoolDto schoolDto) {
+        SchoolDto updatedSchool = schoolService.updateSchool(schoolId, schoolDto);
+        return ResponseEntity.ok(updatedSchool);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<SchoolDto>> getAllSchools() {
         List<SchoolDto> schools = schoolService.getAllSchools();
-        if(schools.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(schools);
+        return schools.isEmpty() ?
+                ResponseEntity.noContent().build() :
+                ResponseEntity.ok(schools);
     }
 
-    @DeleteMapping("/{classId}")
-    public ResponseEntity<Void> deleteSchoolById(@PathVariable Long classId) {
-        schoolService.deleteSchoolById(classId);
+    @DeleteMapping("/{schoolId}")
+    public ResponseEntity<Void> deleteSchool(@PathVariable Long schoolId) {
+        schoolService.deleteSchoolById(schoolId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{schoolId}/classes")
+    public ResponseEntity<SchoolClassDto> addClassToSchool(@PathVariable Long schoolId, @RequestBody CreateSchoolClassDto dto) {
+        SchoolClassDto addedClass = schoolService.addClassToSchool(schoolId, dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedClass);
+    }
+
+    @DeleteMapping("/{schoolId}/classes/{classId}")
+    public ResponseEntity<Void> removeClassFromSchool(@PathVariable Long schoolId, @PathVariable Long classId) {
+        schoolService.removeClassFromSchool(schoolId, classId);
         return ResponseEntity.noContent().build();
     }
 }

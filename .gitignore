@@ -2,7 +2,7 @@
 .DS_Store
 
 # Gradle build output
-/build
+**/build
 .gradle
 
 # IntelliJ IDEA settings

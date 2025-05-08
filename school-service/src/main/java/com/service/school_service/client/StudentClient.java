@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +25,7 @@ public class StudentClient {
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/users/students/")
+                        .path("/api/students/")
                         .queryParam("classId", classId)
                         .build())
                 .retrieve()
@@ -44,7 +45,7 @@ public class StudentClient {
                 .block();
     }
 
-    public void removeClassIdFromStudents(Set<Long> studentIds) {
+    public void removeClassIdFromStudents(Set<UUID> studentIds) {
         if (studentIds == null || studentIds.isEmpty())
             throw new IllegalArgumentException("studentIds must not be null or empty");
 
@@ -56,21 +57,7 @@ public class StudentClient {
                 .block();
     }
 
-    public void assignClassIdToStudents(Set<Long> studentIds, Long schoolClassId) {
-        if (studentIds == null || studentIds.isEmpty())
-            throw new IllegalArgumentException("studentIds must not be null or empty");
-        if (schoolClassId == null)
-            throw new IllegalArgumentException("schoolClassId must not be null");
-
-        webClient.put()
-                .uri("students/add-class/{id}" , schoolClassId)
-                .bodyValue(studentIds)
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
-    }
-
-    public Set<StudentDto> getStudentsByIds(Set<Long> studentIds) {
+    public Set<StudentDto> getStudentsByIds(Set<UUID> studentIds) {
         if (studentIds == null || studentIds.isEmpty())
             throw new IllegalArgumentException("studentIds must not be null or empty");
 
@@ -86,5 +73,47 @@ public class StudentClient {
                 .block(); // blocking
 
         return new HashSet<>(students);
+    }
+
+    public StudentDto getStudentById(UUID studentId) {
+        if (studentId == null) throw new IllegalArgumentException("studentId must not be null");
+
+        return webClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder.path("/api/students/{id}")
+                                .queryParam("id", studentId)
+                                .build()
+                )
+            .retrieve()
+                .bodyToMono(StudentDto.class)
+                .block();
+    }
+
+    public void assignStudentToClass(UUID studentId, Long classId) {
+        if (studentId == null)
+            throw new IllegalArgumentException("studentIds must not be null or empty");
+        if (classId == null)
+            throw new IllegalArgumentException("schoolClassId must not be null");
+
+        webClient.put()
+                .uri("students/add-class/{id}" , classId)
+                .bodyValue(studentId)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
+
+    public void unassignStudentToClass(UUID studentId, Long classId) {
+        if (studentId == null)
+            throw new IllegalArgumentException("studentIds must not be null or empty");
+        if (classId == null)
+            throw new IllegalArgumentException("schoolClassId must not be null");
+
+        webClient.put()
+                .uri("students/remove-class/{id}" , classId)
+                .bodyValue(studentId)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 }

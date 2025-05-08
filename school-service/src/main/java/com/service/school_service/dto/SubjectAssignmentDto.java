@@ -1,14 +1,15 @@
 package com.service.school_service.dto;
 
+import com.service.school_service.enums.TimeSlot;
+
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record SubjectAssignmentDto(
         Long id,
         DayOfWeek dayOfWeek,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
-        Long teacherId,
+        TimeSlot timeSlot,
+        UUID teacherId,
         Long subjectId,
         Long programId
 ) {

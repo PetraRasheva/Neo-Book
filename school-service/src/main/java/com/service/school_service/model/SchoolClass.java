@@ -6,16 +6,19 @@ import com.service.school_service.enums.GradeLetter;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class SchoolClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
     private int gradeLevel;
 
     @Column
@@ -30,11 +33,24 @@ public class SchoolClass {
     @JoinColumn(name = "speciality_id", nullable = false)
     private Speciality speciality;
 
-    private Long teacherId; // Stored in DB
+    private UUID teacherId; // Stored in DB
 
+    //TODO: import as an external lib
     @Transient
     private TeacherDto teacherDto;
 
     @Transient
-    private Set<StudentDto> students;
+    private Set<StudentDto> students = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule; // should not update this
+
+    public void assignStudent(StudentDto students) {
+        this.students.add(students);
+    }
+
+    public void unassignStudent(StudentDto students) {
+        this.students.remove(students);
+    }
 }

@@ -11,14 +11,14 @@ import org.mapstruct.Named;
 
 @Mapper( componentModel = "spring")
 public interface SchoolClassMapper {
-    @Mapping(target = "school", source = "schoolId", qualifiedByName = "idToSchool")
-    @Mapping(target = "speciality", source = "specialityId", qualifiedByName = "idToSpeciality")
     @Mapping(target = "teacherDto", ignore = true) // ignore transient field on toEntity
     @Mapping(target = "students", ignore = true) // ignore transient field on toEntity
+    @Mapping(target = "school", source = "schoolId", qualifiedByName = "idToSchool")
+    @Mapping(target = "speciality", source = "specialityId", qualifiedByName = "idToSpeciality")
     SchoolClass toEntity(SchoolClassDto schoolClassDto);
 
-    @Mapping(target = "id", ignore = true) // because it's auto-generated
-    @Mapping(target = "students", ignore = true) // we create school empty first
+    @Mapping(target = "teacherDto", ignore = true)
+    @Mapping(target = "students", ignore = true)
     @Mapping(target = "school", source = "schoolId", qualifiedByName = "idToSchool")
     @Mapping(target = "speciality", source = "specialityId", qualifiedByName = "idToSpeciality")
     SchoolClass toEntity(CreateSchoolClassDto createSchoolClassDto);
@@ -28,7 +28,7 @@ public interface SchoolClassMapper {
     // Map transient fields normally
     SchoolClassDto toDto(SchoolClass schoolClass);
 
-    // Custom methods to convert ids to entities - you can implement these or inject services for real lookups
+    // Helper method for mapping ID to School
     @Named("idToSchool")
     default School idToSchool(Long id) {
         if (id == null) return null;
@@ -37,6 +37,7 @@ public interface SchoolClassMapper {
         return school;
     }
 
+    // Helper method for mapping ID to Speciality
     @Named("idToSpeciality")
     default Speciality idToSpeciality(Long id) {
         if (id == null) return null;

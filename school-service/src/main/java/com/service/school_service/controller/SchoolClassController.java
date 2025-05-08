@@ -1,8 +1,10 @@
 package com.service.school_service.controller;
 
 import com.service.school_service.dto.CreateSchoolClassDto;
+import com.service.school_service.dto.ScheduleDto;
 import com.service.school_service.dto.SchoolClassDto;
 import com.service.school_service.service.SchoolClassService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,18 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/school-classes")
+@RequestMapping("/api/school-classes")
+@RequiredArgsConstructor
 public class SchoolClassController {
 
     private final SchoolClassService schoolClassService;
 
-    public SchoolClassController(SchoolClassService schoolClassService) {
-        this.schoolClassService = schoolClassService;
-    }
-
     @GetMapping("/{classId}")
     public ResponseEntity<SchoolClassDto> getSchoolClassWithDetails(@PathVariable Long classId) {
-        SchoolClassDto schoolClassDto = schoolClassService.getSchoolClass(classId);
+        SchoolClassDto schoolClassDto = schoolClassService.getSchoolClassById(classId);
         return new ResponseEntity<>(schoolClassDto, HttpStatus.OK);
 
     }
@@ -50,5 +49,11 @@ public class SchoolClassController {
     public ResponseEntity<List<SchoolClassDto>> getAllSchoolClasses() {
         List<SchoolClassDto> schoolClassDtos = schoolClassService.getAllSchoolClasses();
         return new ResponseEntity<>(schoolClassDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/schedule")
+    public ResponseEntity<ScheduleDto> getSchedule(@PathVariable Long id) {
+        ScheduleDto scheduleDto = this.schoolClassService.getScheduleBySchoolClassId(id);
+        return new ResponseEntity<>(scheduleDto, HttpStatus.OK);
     }
 }
