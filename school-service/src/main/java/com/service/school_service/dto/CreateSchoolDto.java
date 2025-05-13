@@ -1,7 +1,11 @@
 package com.service.school_service.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record CreateSchoolDto(
+        @NotBlank(message = "Name cannot be null")
         String name,
+        @NotBlank(message = "Address cannot be null")
         String address
 ) {
 }

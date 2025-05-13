@@ -6,6 +6,7 @@ import com.service.school_service.service.SubjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +19,13 @@ public class SubjectController {
     private final SubjectService subjectService;
 
     @PostMapping
-    public ResponseEntity<SubjectDto> createSubject(@RequestBody CreateSubjectDto subjectDto) {
+    public ResponseEntity<SubjectDto> createSubject(@RequestBody @Validated CreateSubjectDto subjectDto) {
         SubjectDto created = subjectService.createSubject(subjectDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SubjectDto> updateSubject(@PathVariable Long id, @RequestBody SubjectDto subjectDto) {
+    public ResponseEntity<SubjectDto> updateSubject(@PathVariable Long id, @RequestBody @Validated SubjectDto subjectDto) {
         SubjectDto updated = subjectService.updateSubject(id, subjectDto);
         return ResponseEntity.ok(updated);
     }

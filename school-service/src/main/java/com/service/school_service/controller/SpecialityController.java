@@ -6,6 +6,7 @@ import com.service.school_service.service.SpecialityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +19,13 @@ public class SpecialityController {
     private final SpecialityService specialityService;
 
     @PostMapping
-    public ResponseEntity<SpecialityDto> createSpeciality(@RequestBody CreateSpecialityDto createDto) {
+    public ResponseEntity<SpecialityDto> createSpeciality(@RequestBody @Validated CreateSpecialityDto createDto) {
         SpecialityDto created = specialityService.createSpeciality(createDto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SpecialityDto> updateSpeciality(@PathVariable Long id, @RequestBody SpecialityDto dto) {
+    public ResponseEntity<SpecialityDto> updateSpeciality(@PathVariable Long id, @RequestBody @Validated SpecialityDto dto) {
         SpecialityDto updated = specialityService.updateSpeciality(id, dto);
         return ResponseEntity.ok(updated);
     }

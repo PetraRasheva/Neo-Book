@@ -7,6 +7,7 @@ import com.service.school_service.service.SchoolClassService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class SchoolClassController {
     }
 
     @PostMapping
-    public ResponseEntity<SchoolClassDto> createSchoolClass(@RequestBody CreateSchoolClassDto schoolClass) {
+    public ResponseEntity<SchoolClassDto> createSchoolClass(@RequestBody @Validated CreateSchoolClassDto schoolClass) {
         SchoolClassDto schoolClassDto = schoolClassService.createSchoolClass(schoolClass);
         return new ResponseEntity<>(schoolClassDto, HttpStatus.CREATED);
 
@@ -40,7 +41,7 @@ public class SchoolClassController {
     }
 
     @PutMapping("/{classId}")
-    public ResponseEntity<SchoolClassDto> updateSchoolClass(@PathVariable Long classId, @RequestBody SchoolClassDto schoolClass) {
+    public ResponseEntity<SchoolClassDto> updateSchoolClass(@PathVariable Long classId, @RequestBody @Validated SchoolClassDto schoolClass) {
         SchoolClassDto schoolClassDto = schoolClassService.updateSchoolClass(classId, schoolClass);
         return new ResponseEntity<>(schoolClassDto, HttpStatus.OK);
     }
