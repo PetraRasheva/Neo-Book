@@ -5,10 +5,10 @@ import com.service.school_service.dto.ScheduleDto;
 
 public interface ScheduleService {
 
-    ScheduleDto createSchedule(CreateScheduleDto programDto);
+    ScheduleDto createSchedule(Long schoolClassId);
     //TODO: student get the schedule from school class schedule
     //TODO: iterate through all List<SubjAssignment> and assign them to teachers schedules
-    ScheduleDto updateSchedule(Long id, ScheduleDto scheduleDto);
+    //ScheduleDto updateSchedule(Long id, ScheduleDto scheduleDto); // we do not need it
     ScheduleDto getScheduleById(Long id);
     void deleteSchedule(Long id);
 }

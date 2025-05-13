@@ -1,6 +1,7 @@
 package com.service.school_service.dto;
 
 import com.service.school_service.enums.GradeLetter;
+import com.service.school_service.model.Schedule;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -35,6 +36,8 @@ public record SchoolClassDto(
 
         @NotEmpty(message = "Students list cannot be empty") // Ensure the students list is not empty
         @Valid // Validates each StudentDto in the list
-        HashSet<StudentDto> students
+        HashSet<StudentDto> students,
+
+        Long scheduleId
 ){
 }

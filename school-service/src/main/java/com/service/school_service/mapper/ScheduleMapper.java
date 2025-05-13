@@ -13,16 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper( componentModel = "spring")
+@Mapper(componentModel = "spring")
 public interface ScheduleMapper {
 
-    //TODO: how to map subjAssignments
-    @Mapping(target="id", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "subjectAssignments", ignore = true)
+    @Mapping(target = "schoolClass", ignore = true)
     Schedule toEntity(ScheduleDto scheduleDto);
 
-    @Mapping(target="id", ignore = true)
-    Schedule toEntity(CreateScheduleDto programDto);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "subjectAssignments", ignore = true)
+    @Mapping(target = "schoolClass", source = "schoolClassId")
+    Schedule toEntity(CreateScheduleDto dto);
 
     ScheduleDto toDto(Schedule schedule);
-
 }

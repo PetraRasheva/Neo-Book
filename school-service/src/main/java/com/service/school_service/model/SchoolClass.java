@@ -42,9 +42,8 @@ public class SchoolClass {
     @Transient
     private Set<StudentDto> students = new HashSet<>();
 
-    @OneToOne
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule; // should not update this
+    @OneToOne(mappedBy = "schoolClass") //@JoinColumn(name = "schedule_id") <-- makes a circular dependency HUGE mistake
+    private Schedule schedule;
 
     public void assignStudent(StudentDto students) {
         this.students.add(students);
