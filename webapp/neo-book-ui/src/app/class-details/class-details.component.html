@@ -1,0 +1,55 @@
+@if (class) {
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Class {{ getClassDisplayName(class) }}</mat-card-title>
+      <mat-card-subtitle>
+        Head Teacher: {{ class.headTeacher.name }} ({{ class.headTeacher.subject }})
+        <span class="student-count">• {{ class.students.length }} Students</span>
+      </mat-card-subtitle>
+      <button mat-raised-button color="primary" (click)="viewClassSchedule()">View Class Schedule</button>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="subjects-section">
+        <h3>Class Subjects</h3>
+        <p>{{ getSubjectsList(class.students[0].subjects) }}</p>
+      </div>
+
+      <h3>Students</h3>
+      <mat-list>
+        @for (student of class.students; track student.id) {
+          <mat-list-item>
+            <div class="student-info">
+              <span class="student-name">{{ student.name }}</span>
+              <span class="student-age">Age: {{ student.age }}</span>
+              <span class="student-gpa" [class.high-gpa]="student.gpa >= 5.5">
+                GPA: {{ student.gpa.toFixed(1) }}
+              </span>
+            </div>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        }
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  @if (showSchedule) {
+    <div class="schedule-overlay">
+      <mat-card class="schedule-card">
+        <mat-card-header>
+          <mat-card-title>Class {{ getClassDisplayName(class) }} Schedule</mat-card-title>
+          <button mat-button class="close-button" (click)="closeSchedule()">Close</button>
+        </mat-card-header>
+        <mat-card-content>
+          <app-schedule-view></app-schedule-view>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+} @else {
+  <mat-card>
+    <mat-card-content>
+      <p>Class not found.</p>
+    </mat-card-content>
+  </mat-card>
+}

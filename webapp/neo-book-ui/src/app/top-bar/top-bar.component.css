@@ -1,0 +1,18 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+.title {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}

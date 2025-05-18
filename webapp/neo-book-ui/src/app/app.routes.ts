@@ -3,7 +3,9 @@ import { RoleGuard } from './auth/role.guard';
 import { SchoolsListComponent } from './schools-list/schools-list.component';
 import { SchoolDetailsComponent } from './school-details/school-details.component';
 import { TeachersListComponent } from './teachers-list/teachers-list.component';
+import { TeacherDetailsComponent } from './teacher-details/teacher-details.component';
 import { AuthComponent } from './auth/auth.component';
+import { ClassDetailsComponent } from './class-details/class-details.component';
 
 export const routes: Routes = [
   // Auth routes
@@ -12,10 +14,11 @@ export const routes: Routes = [
   // Headmaster routes
   {
     path: 'headmaster',
-    canActivate: [RoleGuard],
+    // canActivate: [RoleGuard],
     data: { roles: ['headmaster'] },
     children: [
       { path: 'teachers', component: TeachersListComponent },
+      { path: 'teachers/:id', component: TeacherDetailsComponent },
       { path: 'schools', component: SchoolsListComponent },
       { path: 'schools/:id', component: SchoolDetailsComponent },
       { path: '', redirectTo: 'schools', pathMatch: 'full' }
@@ -42,6 +45,12 @@ export const routes: Routes = [
     ]
   },
 
+  // Class routes
+  {
+    path: 'class/:id',
+    component: ClassDetailsComponent
+  },
+
   // Default route
-  { path: '', redirectTo: '/auth', pathMatch: 'full' }
+  { path: '', redirectTo: '/schools/1', pathMatch: 'full' }
 ];

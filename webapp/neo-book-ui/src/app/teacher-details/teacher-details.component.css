@@ -1,0 +1,75 @@
+.teacher-details {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.teacher-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #333;
+}
+
+.header-content .subtitle {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.teacher-info-section {
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.edit-form mat-form-field {
+  width: 100%;
+}
+
+.info-display {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.info-row strong {
+  min-width: 100px;
+  color: #666;
+}
+
+.edit-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}

@@ -1,0 +1,19 @@
+.student-item {
+  padding: 0.5rem 0;
+}
+
+.student-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.student-name {
+  font-weight: 500;
+}
+
+.student-age {
+  color: #666;
+  font-size: 0.9rem;
+}
