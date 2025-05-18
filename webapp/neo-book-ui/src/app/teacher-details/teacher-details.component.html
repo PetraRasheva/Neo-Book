@@ -1,0 +1,52 @@
+@if (teacher()) {
+  <div class="teacher-details">
+    <!-- Header -->
+    <div class="teacher-details-header">
+      <div class="header-content">
+        <h1>{{ teacher()?.name }}</h1>
+        <div class="subtitle">{{ schoolName() }}</div>
+      </div>
+      @if (!isEditing()) {
+        <button mat-raised-button color="primary" (click)="startEditing()">Edit Details</button>
+      }
+    </div>
+
+    <!-- Teacher Information -->
+    <div class="teacher-info-section">
+      @if (isEditing() && editedTeacher) {
+        <div class="edit-form">
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput [(ngModel)]="editedTeacher.name" placeholder="Teacher name">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Subject</mat-label>
+            <input matInput [(ngModel)]="editedTeacher.subject" placeholder="Subject">
+          </mat-form-field>
+        </div>
+      } @else {
+        <div class="info-display">
+          <div class="info-row">
+            <strong>Name:</strong>
+            <span>{{ teacher()?.name }}</span>
+          </div>
+          <div class="info-row">
+            <strong>Subject:</strong>
+            <span>{{ teacher()?.subject }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Edit Controls -->
+    @if (isEditing()) {
+      <div class="edit-controls">
+        <button mat-raised-button color="primary" (click)="saveChanges()">Save Changes</button>
+        <button mat-button (click)="cancelEditing()">Cancel</button>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="loading">Loading teacher details...</div>
+}

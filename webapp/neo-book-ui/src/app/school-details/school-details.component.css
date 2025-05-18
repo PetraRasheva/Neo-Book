@@ -1,0 +1,39 @@
+.school-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #333;
+}
+
+.header-content .subtitle {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.headmaster-section,
+.teachers-section {
+  margin-bottom: 2rem;
+}
+
+.edit-controls {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+mat-form-field {
+  width: 100%;
+  max-width: 400px;
+}

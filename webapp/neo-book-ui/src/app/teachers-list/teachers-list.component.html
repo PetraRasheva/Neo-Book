@@ -1,0 +1,29 @@
+<mat-accordion>
+  @for (subject of subjects(); track subject) {
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{ subject }}</mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-list role="list">
+      @for (teacher of teacherSubjectsMap()[subject]; track teacher.id) {
+      <mat-list-item role="listitem" class="teacher-item" (click)="viewTeacherDetails(teacher)">
+        @if (isEditing) {
+          <div class="teacher-edit-form">
+            <mat-form-field>
+              <mat-label>Name</mat-label>
+              <input matInput [(ngModel)]="teacher.name" (blur)="updateTeacher(teacher)" placeholder="Teacher name">
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Subject</mat-label>
+              <input matInput [(ngModel)]="teacher.subject" (blur)="updateTeacher(teacher)" placeholder="Subject">
+            </mat-form-field>
+          </div>
+        } @else {
+          {{ teacher.name }}
+        }
+      </mat-list-item>
+      }
+    </mat-list>
+  </mat-expansion-panel>
+  }
+</mat-accordion>

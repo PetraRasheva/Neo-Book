@@ -1,0 +1,10 @@
+<mat-list>
+  @for (student of sortedStudents(); track student.id) {
+  <mat-list-item class="student-item">
+    <div class="student-info">
+      <span class="student-name">{{ student.name }}</span>
+      <span class="student-age">Age: {{ student.age }}</span>
+    </div>
+  </mat-list-item>
+  }
+</mat-list>

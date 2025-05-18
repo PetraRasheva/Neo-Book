@@ -1,0 +1,28 @@
+<mat-accordion>
+  @for (class of sortedClasses(); track class.id) {
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Class {{ getClassDisplayName(class) }}
+        <span class="student-count">({{ class.students.length }} students)</span>
+      </mat-panel-title>
+      <mat-panel-description>
+        Head Teacher: {{ class.headTeacher.name }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div class="panel-content">
+      <app-student-list
+        [students]="class.students"
+        [isEditing]="isEditing">
+      </app-student-list>
+
+      <div class="panel-actions">
+        <button mat-raised-button color="primary" [routerLink]="['/class', class.id]">
+          View Details
+        </button>
+      </div>
+    </div>
+  </mat-expansion-panel>
+  }
+</mat-accordion>

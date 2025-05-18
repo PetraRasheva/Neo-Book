@@ -1,0 +1,13 @@
+.teacher-item {
+  margin: 8px 0;
+}
+
+.teacher-edit-form {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.teacher-edit-form mat-form-field {
+  flex: 1;
+}

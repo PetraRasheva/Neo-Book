@@ -1,0 +1,27 @@
+.student-count {
+  margin-left: 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+mat-panel-title {
+  display: flex;
+  align-items: center;
+}
+
+mat-expansion-panel {
+  margin-bottom: 0.5rem;
+}
+
+.panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.panel-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}

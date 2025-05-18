@@ -1,0 +1,100 @@
+.dashboard-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.parent-info {
+  margin-bottom: 24px;
+}
+
+.children-container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+}
+
+.student-selector {
+  height: fit-content;
+}
+
+.student-grade {
+  margin-left: auto;
+  color: #666;
+}
+
+.selected {
+  background-color: rgba(63, 81, 181, 0.1);
+}
+
+.progress-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.high-gpa {
+  color: #4CAF50;
+}
+
+.recent-grades,
+.upcoming-tests {
+  margin-top: 32px;
+}
+
+h3 {
+  margin: 0 0 16px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.grade-subject,
+.test-subject {
+  min-width: 120px;
+  font-weight: 500;
+}
+
+.grade-value {
+  margin: 0 16px;
+  font-weight: 500;
+}
+
+.grade-date,
+.test-date {
+  color: #666;
+  margin-left: auto;
+}
+
+.test-topic {
+  color: #666;
+  margin: 0 16px;
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .children-container {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-stats {
+    grid-template-columns: 1fr;
+  }
+}

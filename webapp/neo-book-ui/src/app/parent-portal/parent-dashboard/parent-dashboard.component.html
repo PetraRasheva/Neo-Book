@@ -1,0 +1,92 @@
+@if (parent) {
+  <div class="dashboard-container">
+    <mat-card class="parent-info">
+      <mat-card-header>
+        <mat-card-title>Welcome, {{ parent.name }}</mat-card-title>
+        <mat-card-subtitle>{{ parent.email }} • {{ parent.phone }}</mat-card-subtitle>
+      </mat-card-header>
+    </mat-card>
+
+    <div class="children-container">
+      <mat-card class="student-selector">
+        <mat-card-header>
+          <mat-card-title>My Children</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-selection-list [multiple]="false">
+            @for (child of parent.children; track child.id) {
+              <mat-list-option
+                [selected]="selectedStudent?.id === child.id"
+                (click)="selectStudent(child)">
+                <div class="student-list-item">
+                  <span>{{ child.name }}</span>
+                  <span class="student-grade">Grade {{ child.class?.grade }}{{ child.class?.letter }}</span>
+                </div>
+              </mat-list-option>
+            }
+          </mat-selection-list>
+        </mat-card-content>
+      </mat-card>
+
+      @if (selectedStudent && studentProgress) {
+        <mat-card class="student-progress">
+          <mat-card-header>
+            <mat-card-title>{{ selectedStudent.name }}'s Progress</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="progress-stats">
+              <div class="stat-item">
+                <div class="stat-label">Current GPA</div>
+                <div class="stat-value" [class.high-gpa]="studentProgress.currentGPA >= 5.5">
+                  {{ studentProgress.currentGPA.toFixed(1) }}
+                </div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Attendance Rate</div>
+                <div class="stat-value">{{ studentProgress.attendanceRate }}%</div>
+              </div>
+            </div>
+
+            <div class="recent-grades">
+              <h3>Recent Grades</h3>
+              <mat-list>
+                @for (grade of studentProgress.recentGrades; track grade.subject) {
+                  <mat-list-item>
+                    <div matListItemTitle class="grade-subject">{{ grade.subject }}</div>
+                    <div matListItemLine>
+                      <span class="grade-value" [class.high-gpa]="grade.grade >= 5.5">
+                        {{ grade.grade.toFixed(1) }}
+                      </span>
+                      <span class="grade-date">{{ grade.date | date:'mediumDate' }}</span>
+                    </div>
+                  </mat-list-item>
+                }
+              </mat-list>
+            </div>
+
+            <div class="upcoming-tests">
+              <h3>Upcoming Tests</h3>
+              <mat-list>
+                @for (test of studentProgress.upcomingTests; track test.subject) {
+                  <mat-list-item>
+                    <div matListItemTitle class="test-subject">{{ test.subject }}</div>
+                    <div matListItemLine>
+                      <span class="test-topic">{{ test.topic }}</span>
+                      <span class="test-date">{{ test.date | date:'mediumDate' }}</span>
+                    </div>
+                  </mat-list-item>
+                }
+              </mat-list>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  </div>
+} @else {
+  <mat-card>
+    <mat-card-content>
+      <p>Loading parent information...</p>
+    </mat-card-content>
+  </mat-card>
+}

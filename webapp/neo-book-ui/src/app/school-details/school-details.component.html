@@ -1,0 +1,51 @@
+<!-- School Details Header -->
+<div class="school-details-header">
+  <div class="header-content">
+    <h1>{{ schoolName() }}</h1>
+    <div class="subtitle">School Details</div>
+  </div>
+  @if (!isEditing()) {
+    <button mat-raised-button color="primary" (click)="startEditing()">Edit Details</button>
+  }
+</div>
+
+<!-- Headmaster Section -->
+<div class="headmaster-section">
+  <h2>Headmaster</h2>
+  @if (isEditing() && editedDetails) {
+    <mat-form-field>
+      <mat-label>Headmaster Name</mat-label>
+      <input matInput [(ngModel)]="editedDetails.headmaster.name" placeholder="Enter headmaster name">
+    </mat-form-field>
+  } @else {
+    <p>{{ headmaster().name }}</p>
+  }
+</div>
+
+<!-- Classes Section -->
+<div class="classes-section">
+  <h2>Classes</h2>
+  <app-class-list
+    [classes]="classes()"
+    [isEditing]="isEditing()"
+    (classSelected)="onClassSelected($event)">
+  </app-class-list>
+</div>
+
+<!-- Teachers Section -->
+<div class="teachers-section">
+  <h2>Teachers</h2>
+  <app-teachers-list
+    [teachers]="teachers()"
+    [isEditing]="isEditing()"
+    (teacherUpdated)="onTeacherUpdated($event)">
+  </app-teachers-list>
+</div>
+
+<!-- Edit Controls -->
+@if (isEditing()) {
+  <div class="edit-controls">
+    <button mat-raised-button color="primary" (click)="saveChanges()">Save Changes</button>
+    <button mat-button (click)="cancelEditing()">Cancel</button>
+  </div>
+}
