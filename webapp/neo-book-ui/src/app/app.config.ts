@@ -8,6 +8,8 @@ import moment from 'moment';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { KeycloakService } from 'keycloak-angular';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { SchoolService } from './services/school.service';
+import { ParentService } from './services/parent.service';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -43,6 +45,8 @@ export const appConfig: ApplicationConfig = {
     { provide: MOMENT, useValue: moment },
     provideAnimations(),
     provideHttpClient(withInterceptors([])),
-    KeycloakService
+    KeycloakService,
+    SchoolService,
+    ParentService
   ]
 };

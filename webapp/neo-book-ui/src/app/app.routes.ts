@@ -6,6 +6,7 @@ import { TeachersListComponent } from './teachers-list/teachers-list.component';
 import { TeacherDetailsComponent } from './teacher-details/teacher-details.component';
 import { AuthComponent } from './auth/auth.component';
 import { ClassDetailsComponent } from './class-details/class-details.component';
+import { ParentDashboardComponent } from './parent-portal/parent-dashboard/parent-dashboard.component';
 
 export const routes: Routes = [
   // Auth routes
@@ -49,6 +50,17 @@ export const routes: Routes = [
   {
     path: 'class/:id',
     component: ClassDetailsComponent
+  },
+
+  // Parent portal routes
+  {
+    path: 'parent-portal',
+    children: [
+      {
+        path: '',
+        component: ParentDashboardComponent
+      }
+    ]
   },
 
   // Default route

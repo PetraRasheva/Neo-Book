@@ -14,4 +14,5 @@ export interface Student {
   subjects: Subject[];
   scheduleId?: number;
   gpa: number;
+  parentIds: number[];  // Reference to parent IDs
 }
