@@ -2,6 +2,7 @@ import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { TeachersListComponent } from "../teachers-list/teachers-list.component";
 import { Teacher } from '../dtos/teacher';
 import { Headmaster } from '../dtos/headmaster';
+import { ScheduleViewComponent } from '../schedule-view/schedule-view.component';
 
 interface SchoolDetails {
   headmaster: Headmaster;
@@ -10,7 +11,7 @@ interface SchoolDetails {
 
 @Component({
   selector: 'app-school-details',
-  imports: [TeachersListComponent],
+  imports: [TeachersListComponent, ScheduleViewComponent],
   templateUrl: './school-details.component.html',
 })
 export class SchoolDetailsComponent implements OnInit {
