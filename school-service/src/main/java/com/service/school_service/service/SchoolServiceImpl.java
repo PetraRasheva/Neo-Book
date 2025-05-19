@@ -7,7 +7,7 @@ import com.service.school_service.mapper.SchoolMapper;
 import com.service.school_service.model.School;
 import com.service.school_service.model.SchoolClass;
 import com.service.school_service.repository.SchoolRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -85,5 +85,11 @@ public class SchoolServiceImpl implements SchoolService {
         }
 
         schoolRepository.save(school);
+    }
+
+    @Transactional(readOnly = true)
+    public School getEntityById(Long id) {
+        return schoolRepository.findById(id)
+                .orElseThrow(() -> new SchoolNotFoundException(id));
     }
 }

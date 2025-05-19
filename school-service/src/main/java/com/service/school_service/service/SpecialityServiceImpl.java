@@ -6,8 +6,10 @@ import com.service.school_service.exception.SpecialityNotFoundException;
 import com.service.school_service.mapper.SpecialityMapper;
 import com.service.school_service.model.Speciality;
 import com.service.school_service.repository.SpecialityRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,5 +54,11 @@ public class SpecialityServiceImpl implements SpecialityService {
         return repository.findAll().stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Speciality getEntityById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Speciality not found with id: " + id));
     }
 }

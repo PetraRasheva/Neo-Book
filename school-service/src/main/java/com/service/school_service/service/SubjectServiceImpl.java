@@ -6,9 +6,9 @@ import com.service.school_service.exception.SubjectNotFoundException;
 import com.service.school_service.mapper.SubjectMapper;
 import com.service.school_service.model.Subject;
 import com.service.school_service.repository.SubjectRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -57,5 +57,11 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public List<SubjectDto> getAllSubjects() {
         return this.subjectRepository.findAll().stream().map(subjectMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Subject getEntityById(Long id) {
+        return subjectRepository.findById(id)
+                .orElseThrow(() -> new SubjectNotFoundException(id));
     }
 }

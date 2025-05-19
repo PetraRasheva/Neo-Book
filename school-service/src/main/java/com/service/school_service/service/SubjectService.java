@@ -2,6 +2,7 @@ package com.service.school_service.service;
 
 import com.service.school_service.dto.CreateSubjectDto;
 import com.service.school_service.dto.SubjectDto;
+import com.service.school_service.model.Subject;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ public interface SubjectService {
     void deleteSubject(Long id);
     SubjectDto getSubjectById(Long id);
     List<SubjectDto> getAllSubjects();
+    Subject getEntityById(Long id);
 }

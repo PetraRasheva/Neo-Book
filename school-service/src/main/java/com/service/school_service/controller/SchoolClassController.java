@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/school-classes")
@@ -56,5 +57,17 @@ public class SchoolClassController {
     public ResponseEntity<ScheduleDto> getSchedule(@PathVariable Long id) {
         ScheduleDto scheduleDto = this.schoolClassService.getScheduleBySchoolClassId(id);
         return new ResponseEntity<>(scheduleDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/{classId}/students/{studentId}/assign")
+    public ResponseEntity<Void> assignStudent(@PathVariable Long classId, @PathVariable UUID studentId) {
+        this.schoolClassService.assignStudent(classId, studentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{classId}/students/{studentId}/unassign")
+    public ResponseEntity<Void> unassignStudent(@PathVariable Long classId, @PathVariable UUID studentId) {
+        this.schoolClassService.unassignStudent(classId, studentId);
+        return ResponseEntity.ok().build();
     }
 }

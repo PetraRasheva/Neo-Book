@@ -6,10 +6,12 @@ import com.service.school_service.dto.*;
 import com.service.school_service.exception.SchoolClassNotFoundException;
 import com.service.school_service.mapper.*;
 import com.service.school_service.model.Schedule;
+import com.service.school_service.model.School;
 import com.service.school_service.model.SchoolClass;
+import com.service.school_service.model.Speciality;
 import com.service.school_service.repository.SchoolClassRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -25,10 +27,8 @@ public class SchoolClassServiceImpl implements SchoolClassService {
     private final SchoolService schoolService;
     private final SpecialityService specialityService;
     private final ScheduleMapper scheduleMapper;
-    private final SchoolMapper schoolMapper;
-    private final SpecialityMapper specialityMapper;
 
-    public SchoolClassServiceImpl(SchoolClassRepository schoolClassRepository, TeacherClient teacherClient, StudentClient studentClient, SchoolClassMapper schoolClassMapper, SchoolService schoolService, SpecialityService specialityService, ScheduleMapper scheduleMapper, SchoolMapper schoolMapper, SpecialityMapper specialityMapper) {
+    public SchoolClassServiceImpl(SchoolClassRepository schoolClassRepository, TeacherClient teacherClient, StudentClient studentClient, SchoolClassMapper schoolClassMapper, SchoolService schoolService, SpecialityService specialityService, ScheduleMapper scheduleMapper) {
         this.schoolClassRepository = schoolClassRepository;
         this.teacherClient = teacherClient;
         this.studentClient = studentClient;
@@ -36,28 +36,44 @@ public class SchoolClassServiceImpl implements SchoolClassService {
         this.schoolService = schoolService;
         this.specialityService = specialityService;
         this.scheduleMapper = scheduleMapper;
-        this.schoolMapper = schoolMapper;
-        this.specialityMapper = specialityMapper;
     }
 
     @Override
-    public SchoolClassDto createSchoolClass(CreateSchoolClassDto schoolClassDto) {
-        SchoolDto school = schoolService.getSchoolById(schoolClassDto.schoolId());
+    @Transactional
+    public SchoolClassDto createSchoolClass(CreateSchoolClassDto dto) {
+        School school = schoolService.getEntityById(dto.schoolId());
+        Speciality speciality = specialityService.getEntityById(dto.specialityId());
 
-        SpecialityDto speciality = specialityService.getSpecialityById(schoolClassDto.specialityId());
-        // Map the DTO to entity
-        SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
+        SchoolClass schoolClass = schoolClassMapper.toEntity(dto);
+        schoolClass.setSchool(school); // owning side
+        schoolClass.setSpeciality(speciality);
 
-        // Attach the fetched school and speciality to the school class
-        schoolClass.setSchool(this.schoolMapper.toEntity(school)); //Is this the right approach ?
-        schoolClass.setSpeciality(this.specialityMapper.toEntity(speciality));
+        // Optional: keep in-memory consistency
+        school.getClasses().add(schoolClass);
 
-        // Save the school class
-        SchoolClass savedClass = schoolClassRepository.save(schoolClass);
-
-        // Return the saved class DTO
-        return schoolClassMapper.toDto(savedClass);
+        SchoolClass saved = schoolClassRepository.save(schoolClass);
+        return schoolClassMapper.toDto(saved);
     }
+
+//    @Override
+//    @Transactional
+//    public SchoolClassDto createSchoolClass(CreateSchoolClassDto schoolClassDto) {
+//        SchoolDto school = schoolService.getSchoolById(schoolClassDto.schoolId());
+//
+//        SpecialityDto speciality = specialityService.getSpecialityById(schoolClassDto.specialityId());
+//        // Map the DTO to entity
+//        SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
+//
+//        // Attach the fetched school and speciality to the school class
+//        schoolClass.setSchool(this.schoolMapper.toEntity(school)); //Is this the right approach ?
+//        schoolClass.setSpeciality(this.specialityMapper.toEntity(speciality));
+//
+//        // Save the school class
+//        SchoolClass savedClass = schoolClassRepository.save(schoolClass);
+//
+//        // Return the saved class DTO
+//        return schoolClassMapper.toDto(savedClass);
+//    }
 
     @Override
     public SchoolClassDto getSchoolClassById(Long id) {
@@ -122,6 +138,7 @@ public class SchoolClassServiceImpl implements SchoolClassService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public SchoolClass getEntityById(Long id) {
         return schoolClassRepository.findById(id)
                 .orElseThrow(() -> new SchoolClassNotFoundException(id));

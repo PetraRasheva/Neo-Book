@@ -15,5 +15,7 @@ public interface SubjectAssignmentMapper {
     @Mapping(target="id", ignore = true)
     SubjectAssignment toEntity(SubjectAssignmentDto subjectAssignmentDto);
 
+    @Mapping(target = "subjectId", source = "subject.id")
+    @Mapping(target = "scheduleId", source = "schedule.id")
     SubjectAssignmentDto toDto(SubjectAssignment subjectAssignment);
 }

@@ -2,6 +2,7 @@ package com.service.school_service.service;
 
 import com.service.school_service.dto.CreateSpecialityDto;
 import com.service.school_service.dto.SpecialityDto;
+import com.service.school_service.model.Speciality;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ public interface SpecialityService {
     void deleteSpeciality(Long id);
     SpecialityDto getSpecialityById(Long id);
     List<SpecialityDto> getAllSpecialities();
+    Speciality getEntityById(Long id);
 }

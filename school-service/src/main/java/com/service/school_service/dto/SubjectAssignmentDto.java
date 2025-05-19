@@ -23,6 +23,6 @@ public record SubjectAssignmentDto(
         Long subjectId,
 
         @NotNull(message = "Program ID cannot be null")
-        Long programId
+        Long scheduleId
 ) {
 }
