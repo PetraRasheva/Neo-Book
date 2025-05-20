@@ -144,6 +144,15 @@ public class SchoolClassServiceImpl implements SchoolClassService {
                 .orElseThrow(() -> new SchoolClassNotFoundException(id));
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<SchoolClassDto> getClassesBySchoolId(Long schoolId) {
+        List<SchoolClass> classes = schoolClassRepository.findBySchoolId(schoolId);
+        return classes.stream()
+                .map(schoolClassMapper::toDto)
+                .toList();
+    }
+
 
     @Override
     public void deleteSchoolClass(Long id) { //TODO: pyrwo mestish ili iztrivash

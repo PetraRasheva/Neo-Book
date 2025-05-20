@@ -18,4 +18,5 @@ public interface SchoolClassService {
     SchoolClassDto updateSchoolClass(Long id, SchoolClassDto updatedClass); //without touching students
     ScheduleDto getScheduleBySchoolClassId(Long id);
     SchoolClass getEntityById(Long id); // Трябвало да се връща entity for safe reasons....
+    List<SchoolClassDto> getClassesBySchoolId(Long schoolId);
 }

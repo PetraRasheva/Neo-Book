@@ -70,4 +70,10 @@ public class SchoolClassController {
         this.schoolClassService.unassignStudent(classId, studentId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/by-school/{schoolId}")
+    public ResponseEntity<List<SchoolClassDto>> getSchoolClassesBySchoolId(@PathVariable Long schoolId) {
+        List<SchoolClassDto> classes = schoolClassService.getClassesBySchoolId(schoolId);
+        return ResponseEntity.ok(classes);
+    }
 }
